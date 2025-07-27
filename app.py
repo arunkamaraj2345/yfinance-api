@@ -7,31 +7,6 @@ app = Flask(__name__)
 def home():
     return 'YFinance API is Running!'
 
-@app.route('/get_stock_data', methods=['GET'])
-def get_stock_data():
-    symbol = request.args.get('symbol')
-    if not symbol:
-        return jsonify({"error": "No symbol provided."})
-
-    try:
-        ticker = yf.Ticker(symbol)
-        df = ticker.history(period="20d").reset_index()
-
-        if df.empty:
-            return jsonify({"error": f"No data found for {symbol}."})
-
-        result = [["Date", "Close"]]
-        for index, row in df.iterrows():
-            result.append([row['Date'].strftime('%Y-%m-%d'), row['Close']])
-
-        return jsonify(result)
-
-    except Exception as e:
-        return jsonify({"error": str(e)})
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)
-
 @app.route('/get_stock_data_between_dates', methods=['GET'])
 def get_stock_data_between_dates():
     symbol = request.args.get('symbol')
